@@ -568,11 +568,65 @@ function Scene() {
 }
 
 /* ============================================================
-   DOM — Header, phase rail
+   DOM — Header, phase rail & Localization
    ============================================================ */
 const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
-function Header({ onRun }: { onRun: () => void }) {
+type Lang = 'en' | 'gu' | 'hi';
+
+const I18N = {
+  en: {
+    heroBadge: "CIRCULAR CARBON ECOSYSTEM — DIAGNOSTIC ENGINE v2.1",
+    heroH1_1: "Stop Guessing.",
+    heroH1_2: "Start ",
+    heroH1_highlight: "Pinpointing",
+    heroSub: "A diagnostic-and-decision engine that turns energy, materials and waste into a ranked, costed, CO₂-quantified circular action plan — built for Indian SMEs and the regulators who oversee them.",
+    runDiag: "Run Free Diagnostic",
+    theMethod: "THE METHOD",
+    seeMethod: "SEE THE METHOD",
+    brandTitle1: "CIRCULAR CARBON",
+    brandTitle2: "ECOSYSTEM",
+    overview: "OVERVIEW",
+    diagnose: "DIAGNOSE",
+    simulate: "SIMULATE",
+    scale: "SCALE",
+  },
+  gu: {
+    heroBadge: "પરિપત્ર કાર્બન ઇકોસિસ્ટમ — નિદાન એન્જિન v2.1",
+    heroH1_1: "અનુમાન બંધ કરો.",
+    heroH1_2: "ચોક્કસ ",
+    heroH1_highlight: "નિદાન શરૂ કરો",
+    heroSub: "ઊર્જા, સામગ્રી અને કચરાને પ્રાથમિકતાવાળા, ખર્ચ-અંદાજિત અને CO₂-ચકાસાયેલ પરિપત્ર એક્શન પ્લાનમાં રૂપાંતરિત કરતું એન્જિન — ભારતીય ઉદ્યોગો અને નિયમનકારો માટે.",
+    runDiag: "મફત નિદાન શરૂ કરો",
+    theMethod: "કાર્ય પદ્ધતિ",
+    seeMethod: "કાર્ય પદ્ધતિ જુઓ",
+    brandTitle1: "પરિપત્ર કાર્બન",
+    brandTitle2: "ઇકોસિસ્ટમ",
+    overview: "વિહંગાવલોકન",
+    diagnose: "નિદાન",
+    simulate: "સિમ્યુલેટ",
+    scale: "સ્કેલ (ગુજરાત)",
+  },
+  hi: {
+    heroBadge: "चक्रीय कार्बन इकोसिस्टम — निदान इंजन v2.1",
+    heroH1_1: "अनुमान लगाना बंद करें.",
+    heroH1_2: "सटीक ",
+    heroH1_highlight: "निदान शुरू करें",
+    heroSub: "ऊर्जा, सामग्री और कचरे को प्राथमिकता-आधारित, लागत-आकलित और CO₂-प्रमाणित चक्रीय कार्य योजना में बदलने वाला इंजन — भारतीय उद्योगों एवं नियामकों के लिए।",
+    runDiag: "निःशुल्क निदान शुरू करें",
+    theMethod: "कार्यप्रणाली",
+    seeMethod: "कार्यप्रणाली देखें",
+    brandTitle1: "चक्रीय कार्बन",
+    brandTitle2: "इकोसिस्टम",
+    overview: "अवलोकन",
+    diagnose: "निदान",
+    simulate: "सिमुलेशन",
+    scale: "विस्तार (गुजरात)",
+  },
+};
+
+function Header({ onRun, lang, setLang }: { onRun: () => void; lang: Lang; setLang: (l: Lang) => void }) {
+  const t = I18N[lang] || I18N.en;
   return (
     <header className="fixed top-0 inset-x-0 z-40 flex items-center justify-between px-5 md:px-10 py-4">
       <button onClick={() => scrollToId('hero')} className="flex items-center gap-3 text-left">
@@ -582,26 +636,40 @@ function Header({ onRun }: { onRun: () => void }) {
           <circle cx="11" cy="11" r="1.4" fill="currentColor" />
         </svg>
         <span className="font-mono text-[9px] leading-[1.5] tracking-[.3em] text-white/70">
-          CIRCULAR CARBON<br /><span className="text-glow/80">ECOSYSTEM</span>
+          {t.brandTitle1}<br /><span className="text-glow/80">{t.brandTitle2}</span>
         </span>
       </button>
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4 md:gap-6">
+        {/* Language selector */}
+        <div className="flex items-center rounded border border-white/20 bg-black/50 p-0.5 font-mono text-[10px]">
+          {(['en', 'gu', 'hi'] as Lang[]).map((l) => (
+            <button
+              key={l}
+              onClick={() => setLang(l)}
+              className={`px-2 py-0.5 rounded transition-colors ${lang === l ? 'bg-glow text-[#04110A] font-bold' : 'text-white/50 hover:text-white'}`}
+            >
+              {l === 'en' ? 'EN' : l === 'gu' ? 'ગુજરાતી' : 'हिन्दी'}
+            </button>
+          ))}
+        </div>
+
         <button onClick={() => scrollToId('diagnose')} className="hidden md:block font-mono text-[10px] tracking-[.28em] text-white/45 hover:text-glow transition-colors">
-          THE METHOD
+          {t.theMethod}
         </button>
         <button onClick={onRun} className="ghost-btn rounded-[3px] px-4 py-2 font-mono text-[10px] tracking-[.22em]">
-          RUN DIAGNOSTIC
+          {lang === 'gu' ? 'ડાયગ્નોસ્ટિક શરૂ કરો' : lang === 'hi' ? 'डायग्नोस्टिक चलाएं' : 'RUN DIAGNOSTIC'}
         </button>
       </div>
     </header>
   );
 }
 
-function PhaseRail() {
+function PhaseRail({ lang }: { lang: Lang }) {
   const [idx, setIdx] = useState(0);
+  const t = I18N[lang] || I18N.en;
   const items = [
-    { id: 'hero', l: 'OVERVIEW' }, { id: 'diagnose', l: 'DIAGNOSE' },
-    { id: 'simulate', l: 'SIMULATE' }, { id: 'scale', l: 'SCALE' },
+    { id: 'hero', l: t.overview }, { id: 'diagnose', l: t.diagnose },
+    { id: 'simulate', l: t.simulate }, { id: 'scale', l: t.scale },
   ];
   useEffect(() => {
     let raf = 0, cur = -1;
@@ -853,6 +921,20 @@ function App() {
   const [fix, setFixState] = useState(0);
   const [modal, setModal] = useState(false);
   const [ready, setReady] = useState(false);
+  const [lang, setLangState] = useState<Lang>(() => {
+    try {
+      const s = localStorage.getItem('cci_language');
+      if (s === 'en' || s === 'gu' || s === 'hi') return s as Lang;
+    } catch {}
+    return 'en';
+  });
+
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    try { localStorage.setItem('cci_language', l); } catch {}
+  };
+
+  const t = I18N[lang] || I18N.en;
   const rootRef = useRef<HTMLDivElement>(null);
 
   const setFix = useCallback((v: number) => { setFixState(v); store.fix = v / 100; }, []);
@@ -935,30 +1017,29 @@ function App() {
         </Canvas>
       </div>
 
-      <Header onRun={openMvp} />
-      <PhaseRail />
+      <Header onRun={openMvp} lang={lang} setLang={setLang} />
+      <PhaseRail lang={lang} />
 
       <main id="scroll-root" className="relative z-10">
         {/* ============ 00 · HERO ============ */}
         <section id="hero" className="relative h-screen">
           <div id="hero-inner" className="h-full flex flex-col justify-center px-6 md:px-14 max-w-[760px]">
             <p data-hero-stagger className="font-mono text-[10px] md:text-[11px] tracking-[.35em] text-glow/80">
-              CIRCULAR CARBON ECOSYSTEM — DIAGNOSTIC ENGINE v2.1
+              {t.heroBadge}
             </p>
             <h1 data-hero-stagger className="mt-5 font-disp font-semibold leading-[.98] tracking-tight text-[clamp(2.7rem,6.5vw,5.4rem)]">
-              Stop Guessing.<br />Start <span className="text-glow">Pinpointing</span><span className="text-glow">.</span>
+              {t.heroH1_1}<br />{t.heroH1_2}<span className="text-glow">{t.heroH1_highlight}</span><span className="text-glow">.</span>
             </h1>
             <p data-hero-stagger className="mt-6 max-w-[46ch] text-white/60 text-[15px] md:text-base leading-relaxed">
-              A diagnostic-and-decision engine that turns energy, materials and waste into a ranked, costed,
-              CO₂-quantified circular action plan — built for Indian SMEs and the regulators who oversee them.
+              {t.heroSub}
             </p>
             <div data-hero-stagger className="mt-9 flex flex-wrap items-center gap-6">
               <button onClick={openMvp} className="btn-primary rounded-[3px] px-7 py-3.5 font-disp font-semibold text-[15px] flex items-center gap-2.5">
-                Run Free Diagnostic
+                {t.runDiag}
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M2 8h11M9 3.5 13.5 8 9 12.5" /></svg>
               </button>
               <button onClick={() => scrollToId('diagnose')} className="font-mono text-[10px] tracking-[.28em] text-white/50 hover:text-glow transition-colors">
-                SEE THE METHOD
+                {t.seeMethod}
                 <svg className="inline ml-2 -mt-0.5" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 1v10M2 7.5 6 11l4-3.5" /></svg>
               </button>
             </div>

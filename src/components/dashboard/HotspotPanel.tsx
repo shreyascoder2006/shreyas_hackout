@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useFactoryStore } from "../../store/useFactoryStore";
+import { useTranslation } from "../../store/useLanguageStore";
 import { severityColor, severityLabel, confidenceLabel, formatInr, pctVsBenchmark } from "../../lib/severity";
 import type { Intervention, Factory } from "../../types";
 import SymbiosisPanel from "./SymbiosisPanel";
@@ -33,6 +34,7 @@ function Sparkline({ points }: { points: MonthlyPoint[] }) {
 }
 
 function InterventionCard({ intervention }: { intervention: Intervention }) {
+  const { t } = useTranslation();
   return (
     <div className="rounded-lg border border-[color:var(--color-border)] bg-[color:var(--color-panel-2)] p-3">
       <div className="flex items-start justify-between gap-2">
@@ -44,20 +46,20 @@ function InterventionCard({ intervention }: { intervention: Intervention }) {
       <p className="mt-1 text-[12px] text-[color:var(--color-muted)]">{intervention.description}</p>
       <div className="mt-2 grid grid-cols-4 gap-2 text-center">
         <div>
-          <div className="text-[10px] text-[color:var(--color-muted)]">CAPEX</div>
+          <div className="text-[10px] text-[color:var(--color-muted)]">{t("capex")}</div>
           <div className="text-xs font-semibold">{formatInr(intervention.capexInr)}</div>
         </div>
         <div>
-          <div className="text-[10px] text-[color:var(--color-muted)]">Saving/yr</div>
+          <div className="text-[10px] text-[color:var(--color-muted)]">{t("annualSaving")}</div>
           <div className="text-xs font-semibold text-[color:var(--color-ok)]">{formatInr(intervention.annualSavingInr)}</div>
         </div>
         <div>
-          <div className="text-[10px] text-[color:var(--color-muted)]">CO2 cut</div>
-          <div className="text-xs font-semibold">{intervention.co2ReductionTpy} t/yr</div>
+          <div className="text-[10px] text-[color:var(--color-muted)]">{t("co2Reduction")}</div>
+          <div className="text-xs font-semibold">{intervention.co2ReductionTpy} {t("tonnesPerYear")}</div>
         </div>
         <div>
-          <div className="text-[10px] text-[color:var(--color-muted)]">Payback</div>
-          <div className="text-xs font-semibold">{intervention.paybackMonths} mo</div>
+          <div className="text-[10px] text-[color:var(--color-muted)]">{t("payback")}</div>
+          <div className="text-xs font-semibold">{intervention.paybackMonths} {t("months")}</div>
         </div>
       </div>
       <div className="mt-2 text-[10px] italic text-[color:var(--color-muted)]">{confidenceLabel[intervention.confidence]}</div>
@@ -67,6 +69,7 @@ function InterventionCard({ intervention }: { intervention: Intervention }) {
 
 export default function HotspotPanel({ factory }: { factory: Factory }) {
   const selectedNodeId = useFactoryStore((s) => s.selectedNodeId);
+  const { t } = useTranslation();
   const node = factory.nodes.find((n) => n.id === selectedNodeId) ?? null;
 
   return (
@@ -124,13 +127,13 @@ export default function HotspotPanel({ factory }: { factory: Factory }) {
             {node.monthly && node.monthly.length >= 4 && <Sparkline points={node.monthly} />}
 
             <div className="mt-4">
-              <h4 className="mb-1 text-xs font-semibold uppercase tracking-wide text-[color:var(--color-muted)]">Root cause</h4>
+              <h4 className="mb-1 text-xs font-semibold uppercase tracking-wide text-[color:var(--color-muted)]">{t("rootCauseTitle")}</h4>
               <p className="text-[13px] leading-relaxed text-[color:var(--color-text)]">{node.rootCause}</p>
             </div>
 
             <div className="mt-4">
               <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-[color:var(--color-muted)]">
-                Recommended circular interventions ({node.interventions.length})
+                {t("interventionsTitle")} ({node.interventions.length})
               </h4>
               <div className="flex flex-col gap-2">
                 {[...node.interventions]

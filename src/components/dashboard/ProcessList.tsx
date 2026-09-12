@@ -1,18 +1,26 @@
 import { useFactoryStore } from "../../store/useFactoryStore";
-import type { Factory } from "../../types";
-import { severityColor, severityLabel } from "../../lib/severity";
+import { useTranslation } from "../../store/useLanguageStore";
+import type { Factory, Severity } from "../../types";
+import { severityColor } from "../../lib/severity";
 
 export default function ProcessList({ factory }: { factory: Factory }) {
   const selectedNodeId = useFactoryStore((s) => s.selectedNodeId);
   const select = useFactoryStore((s) => s.select);
+  const { t } = useTranslation();
 
   const sorted = [...factory.nodes].sort((a, b) => b.shareOfTotal - a.shareOfTotal);
+
+  const getSeverityLabel = (sev: Severity) => {
+    if (sev === "ok") return t("severityOnBenchmark");
+    if (sev === "warn") return t("severityElevated");
+    return t("severityHotspot");
+  };
 
   return (
     <div className="glass flex h-full flex-col rounded-xl">
       <div className="border-b border-[color:var(--color-border)] px-4 py-3">
-        <h3 className="text-sm font-semibold">Process breakdown</h3>
-        <p className="text-[11px] text-[color:var(--color-muted)]">Ranked by share of total emissions</p>
+        <h3 className="text-sm font-semibold">{t("processBreakdown")}</h3>
+        <p className="text-[11px] text-[color:var(--color-muted)]">{t("processBreakdownSub")}</p>
       </div>
       <div className="flex-1 overflow-y-auto">
         {sorted.map((node) => {
@@ -32,7 +40,7 @@ export default function ProcessList({ factory }: { factory: Factory }) {
                 />
                 <div className="min-w-0">
                   <div className="truncate text-sm font-medium">{node.label}</div>
-                  <div className="truncate text-[11px] text-[color:var(--color-muted)]">{severityLabel[node.severity]}</div>
+                  <div className="truncate text-[11px] text-[color:var(--color-muted)]">{getSeverityLabel(node.severity)}</div>
                 </div>
               </div>
               <div className="flex-shrink-0 text-right">
