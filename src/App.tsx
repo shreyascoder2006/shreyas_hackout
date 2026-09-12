@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/layout/Header";
 import FactoryPage from "./pages/FactoryPage";
 import SimulatorPage from "./pages/SimulatorPage";
@@ -12,7 +12,7 @@ import JarvisAssistant from "./components/assistant/JarvisAssistant";
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="flex h-screen flex-col overflow-hidden">
         <Header />
         <Routes>
@@ -28,7 +28,7 @@ function App() {
         </Routes>
         <JarvisAssistant />
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

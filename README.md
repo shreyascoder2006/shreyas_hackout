@@ -1,8 +1,20 @@
-# Circular Carbon Hackout
+# Circular Carbon Intelligence
 
-This repository keeps the public landing experience and the Circular Carbon MVP separate.
+A single deployable MVP with a landing-first journey and the complete industrial decarbonisation platform.
 
-- `landing/` contains the standalone animated landing page. Its **Run Diagnostic** action opens the MVP; configure the destination with the landing URL query parameter, for example `?app=https://your-mvp-domain`.
-- `mvp/` contains the application, including the frontend and calculation/data modules in `mvp/backend/`.
+## Routes
 
-For local development, start the MVP frontend from `mvp/frontend/`, then serve `landing/` and point its `app` query parameter at the MVP's local address.
+- `/` — animated Circular Carbon landing page
+- `/app.html` — product dashboard
+- `#/simulate`, `#/plan`, `#/regulator`, `#/portfolio`, `#/intake`, and `#/co2-exchange` — product modules after opening the app
+
+The landing page's **Run Diagnostic** action opens `/app.html`, so both experiences ship from the same project and domain.
+
+## Run locally
+
+```powershell
+npm ci
+npm run dev
+```
+
+Open the local URL printed by Vite. The app's complete calculation/data modules are in `backend/`.

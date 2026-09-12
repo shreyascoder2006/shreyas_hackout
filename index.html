@@ -117,7 +117,7 @@ const store = {
 
 // Repository boundary: this landing application only navigates to the MVP.
 // For a deployed setup, pass the live MVP address as ?app=https://app.example.com.
-const MVP_URL = new URLSearchParams(window.location.search).get('app') || 'http://localhost:5191/';
+const MVP_URL = new URLSearchParams(window.location.search).get('app') || '/app.html';
 const openMvp = () => { window.location.assign(MVP_URL); };
 
 /* ---------- helpers ---------- */
