@@ -1,0 +1,6 @@
+# Generated dependencies and build outputs
+**/node_modules/
+**/dist/
+**/.vite/
+**/__pycache__/
+*.py[cod]
